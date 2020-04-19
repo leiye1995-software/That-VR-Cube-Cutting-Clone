@@ -1,0 +1,40 @@
+name: Unity Builder
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: Build my project ✨
+    runs-on: ubuntu-latest
+    steps:
+
+      # Checkout
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      # Cache
+      - name: Cache
+        uses: actions/cache@v1.1.0
+        with:
+          path: Library
+          key: Library
+      
+      #Build
+      - name: Build
+        uses: webbertakken/unity-builder@v0.11
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          unityVersion: 2019.3.3f1
+          targetPlatform: Android
+      
+      #Upload
+      - name: Upload
+        uses: actions/upload-artifact@v1
+        with:
+          name: Build
+          path: build
